@@ -43,7 +43,7 @@ func _ready() -> void:
 	input_text_edit.connect("text_submitted", Callable(self, "_on_command_submitted"))
 	input_text_edit.connect("gui_input", Callable(self, "_on_input_text_gui_input"))
 	
-	 # Connect top bar and resize handle input events
+	 # connect top bar and resize handle input events
 	top_bar.connect("gui_input", Callable(self, "_on_top_bar_gui_input"))
 	resize_handle.connect("gui_input", Callable(self, "_on_resize_handle_gui_input"))
 
@@ -60,13 +60,13 @@ func toggle_console():
 	is_console_open = !is_console_open
 	visible = is_console_open
 
-	# Show/hide the mouse cursor
+	# show/hide the mouse cursor
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE if is_console_open else Input.MOUSE_MODE_CAPTURED)
 
-	# Pause the game when the console is open
+	# pause the game when the console is open not wanted always
 	#get_tree().paused = is_console_open
 
-	# Focus the input field when the console is opened
+	# focus the input field when the console is opened
 	if is_console_open:
 		call_deferred("_focus_input_line")
 
@@ -78,33 +78,31 @@ func _on_top_bar_gui_input(event: InputEvent):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
-				# Start dragging
+				# start dragging
 				is_dragging = true
 				drag_offset = get_global_mouse_position() - global_position
 			else:
-				# Stop dragging
+				# stop dragging
 				is_dragging = false
 	elif event is InputEventMouseMotion and is_dragging:
-		# Move the console
+		# move the console
 		global_position = get_global_mouse_position() - drag_offset
 
-# Handle resize handle dragging
+# handle resize handle dragging
 func _on_resize_handle_gui_input(event: InputEvent):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
-				# Start resizing
 				is_resizing = true
 				initial_size = size
 			else:
-				# Stop resizing
 				is_resizing = false
 	elif event is InputEventMouseMotion and is_resizing:
-		# Resize the console
+		# eesize the console
 		var mouse_position = get_local_mouse_position()
 		console_panel.size = Vector2(
-			max(mouse_position.x, 200),  # Minimum width
-			max(mouse_position.y, 150)   # Minimum height
+			max(mouse_position.x, 200),  # min width
+			max(mouse_position.y, 150)   # max height
 		)
 
 ### cycling history
@@ -198,7 +196,7 @@ func _command_set_max_fps(args: Array):
 		return
 	var fps = args[0].to_int()
 	Engine.max_fps = fps
-	print_to_console("Target FPS set to: " + str(fps))
+	print_to_console("Max FPS set to: " + str(fps))
 
 func _command_time_scale(args: Array):
 	if args.size() != 1 or not args[0].is_valid_float():
@@ -242,7 +240,7 @@ func _command_set_font_size(args: Array):
 		print_to_console("Font size must be between 8 and 48.")
 		return
 	
-	# Set the font size for the TextEdit and LineEdit
+	# Set the font size for the input and output
 	output_text_edit.add_theme_font_size_override("font_size", font_size)
 	input_text_edit.add_theme_font_size_override("font_size", font_size)
 	print_to_console("Font size set to: " + str(font_size))
